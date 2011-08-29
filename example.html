@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+    <head>
+	
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		<script type="text/javascript" src="http://cdn.mmcreation.com/javascript/jquery.colorpicker/colorpicker.js"></script>
+		
+		<script type="text/javascript" src="csspanel/jquery.csspanel.js"></script>
+		<script type="text/javascript" src="csspanel/jquery.csspanel.js"></script>
+		
+	
+		<link rel="stylesheet" type="text/css" href="csspanel/jquery.csspanel.css" />
+        <link rel="stylesheet" type="text/css" href="http://cdn.mmcreation.com/javascript/jquery.colorpicker/css/colorpicker.css" />
+		<link rel="stylesheet" type="text/css" href="example/style.css" />
+        <meta http-equiv="content-type" content="text/php; charset=utf-8" />
+
+        <title>jQuery CSS Panel example</title>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="header">
+				I am the Header
+            </div>
+
+            <div class="Menu">
+			    <h1>I am a h1 tag</h1>
+                <ul id="nav"> 
+                    <li>menu item</li>  
+                    <li>menu item</li> 
+                    <li>menu item</li>  
+                    <li>menu item</li> 
+                    <li>menu item</li>  
+                    <li>menu item</li> 
+                </ul> 
+			    <h1>I am a h2 tag</h1>				
+            </div>
+
+            <div class="Body">
+
+            </div>
+        </div>
+
+    </body>
+
+	<script>
+	        jQuery(document).ready(function(){
+
+
+		  var test = {};
+		  
+		  test[0] = {
+		    'selector':'body',
+		    'type':'color',
+		    'text':'Text Color'
+		  }			  
+		  
+		  test[1] = {
+		    'selector':'h1,h2,h3',
+		    'type':'color',
+		    'text':'Headings Color'
+		  }		  
+		  
+		  test[3] = {
+		    'selector':'body',
+		    'type':'background-color',
+		    'text':'Page Background',
+		    'description': 'also some nice description text'
+		  }
+  
+  		  test[4] = {
+		    'selector':'body',
+		    'type':'background-image',
+		    'text':'Page Image',
+		    'description': 'test',
+			'files': [{'image':'example/background/bgdiagonall.png','thumbnail':'example/background/bgdiagonall_thumb.png'}]
+		  }
+  
+		  jQuery('body').append('<div id=\"panel\"/>');
+          jQuery('#panel').CSSPanel({'jsonpath': '/?eID=tx_csspanel', 'csselements': test})
+        })
+	</script>
+</html>

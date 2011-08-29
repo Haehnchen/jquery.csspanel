@@ -1,0 +1,36 @@
+body {
+background-color:#EAEAEA;
+}
+
+.container {
+	width:960px;
+	background-color:#fcfcfc;
+	margin: 0 auto;
+	padding:10px;
+}
+
+.header {
+	background-color:#C4C4C4;
+	padding:20px;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+ 
+.clearfix {
+	display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+	display: block;
+}
+ 
+* html .clearfix {
+	height: 1%;
+}

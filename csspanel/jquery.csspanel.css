@@ -1,0 +1,160 @@
+
+#panel {
+  position:fixed;
+  z-index:1000;
+  top:80px;
+}
+
+#panel, #panel a, #panel h2 {
+  color:black !important;
+  font-family:verdana !important;
+  font-size:12px;  
+}
+
+#panel .colorselector {
+  width:16px;
+  height:16px;
+  cursor:pointer;
+  background:transparent url(img/select.png) no-repeat bottom right;
+  border:1px solid black;
+}
+
+.colorpicker {
+	z-index:1001;
+}
+
+#panel h2 {
+  margin:0; padding:0;
+  font-size:12px;
+  color:black !important;  
+}
+
+#panel .trigger {
+    background: #FFFFFF url(img/edit.png) no-repeat 5px center;
+    box-shadow: 1px 0 4px rgba(0, 0, 0, 0.2);
+    display: block;
+	float:right;
+    padding: 4px 10px;
+    text-align: right;
+    width: 50px;
+
+	margin-top:15px;
+	text-decoration:none;
+}
+
+#panel .content {
+  width:180px;
+
+  background-color:white;
+  padding: 16px; 	
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.12) inset;
+}
+
+#panel-content-inner {
+  float:left;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.25); 
+ 
+}
+
+#panel .panel-content {
+  position:relative;
+}
+
+#panel .background-image .img {
+  float:left;
+  margin-right:2px;
+  cursor:pointer;
+  background-color:white;
+  border:1px solid grey;
+}
+
+#panel .colorselector {
+  background-color:white;
+  float:left;
+  margin-top:-19px;
+}
+
+#panel .background-image .selected {
+  border:1px solid black;
+}
+
+#panel .background-image .none {
+	width:30px; height:30px;
+	background: transparent url(img/none.png) no-repeat;
+}
+
+#panel 
+
+#panel .color,
+#panel .background-color {
+
+
+}
+
+#panel .color h2,
+#panel .background-color h2 {
+	/* float:right; */
+	margin-left:25px;
+	overflow:hidden;
+	line-height:20px;
+}
+
+#panel .help {
+	float:right;
+	width:16px;
+	height:16px;
+	background:transparent url(img/help.png) no-repeat center center;
+	margin-top:-19px;	
+	margin-right:2px;
+	cursor:pointer;
+	opacity:0.5;
+}
+
+#panel .help.open {
+	opacity:1;
+}
+
+#panel .description {
+ display:none;
+}
+
+#panel .content > div {
+	background-color:#FBFBFB;
+	margin:2px 0;
+}
+
+#panel .logger .icon {
+	float:left;
+	width:10px; height: 10px;
+	background: transparent;
+}
+
+#panel .logger {
+	margin-top:10px;
+	font-size:10px;
+	line-height:1em;
+	color: #999;
+}
+#panel .logger .text {
+	margin-left:3px;
+}
+
+/*
+#panel .font-family .times {
+  font-family: Times, "Times New Roman", Georgia, "DejaVu Serif", serif;
+}
+
+#panel .font-family .georgia {
+  font-family: Georgia, "Times New Roman", "DejaVu Serif", serif;
+}
+
+#panel .font-family .verdana {
+	font-family: Verdana, Tahoma, "DejaVu Sans", sans-serif;
+}
+
+#panel .font-family .droid {
+	font-family: "Droid Sans",sans-serif;
+}
+*/
+
