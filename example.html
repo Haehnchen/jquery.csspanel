@@ -77,9 +77,13 @@
 		    'description': 'test',
 			'files': [{'image':'example/background/bgdiagonall.png','thumbnail':'example/background/bgdiagonall_thumb.png'}]
 		  }
+      
+      var profiles = {};
+      profiles['example'] = ['body|background-color|#00FF00'];
+      profiles['example1'] = [{'selector': 'body', 'type':'background-color', 'value': '#000055'}, 'body|color|#000000', 'h1,h2,h3|color|#FF0000'];
   
 		  jQuery('body').append('<div id=\"panel\"/>');
-          jQuery('#panel').CSSPanel({'jsonpath': '/?eID=tx_csspanel', 'csselements': test})
+          jQuery('#panel').CSSPanel({'jsonpath': '/?eID=tx_csspanel', 'csselements': test, 'profiles': profiles})
         })
 	</script>
 </html>

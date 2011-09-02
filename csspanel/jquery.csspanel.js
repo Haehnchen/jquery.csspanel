@@ -11,10 +11,12 @@
       foo: 'bar',
       csselements: '',
       jsonpath: '',
+      profiles: '',
       onFoo: function() {}
     }
 
     var plugin = this;
+    var selected_profile = '';
 
     plugin.settings = {}
 
@@ -23,8 +25,9 @@
 
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, options);
-	  
-	  $element.append('<div class="panel-content" class="clearfix"><div id="panel-content-inner" class="clearfix"><div class="content"></div></div><a href="" class="trigger">info</a></div>');
+
+      if ($element.find('.panel-content').length > 0) $element.find('.panel-content').remove();
+      $element.append('<div class="panel-content" class="clearfix"><div id="panel-content-inner" class="clearfix"><div class="content"></div></div><a href="" class="trigger">info</a></div>');
 
       if (plugin.settings.csselements != '') {
         tt = plugin.settings.csselements;
@@ -52,7 +55,60 @@
     // code goes here
     }
 
+    var profiles = function() {
+      var ele = $(element).find('.content');
+
+      var str = '<label for="profil">Profiles</label><select name="profil">';
+      $.each(plugin.settings.profiles, function(key, profile) {
+        str += '<option value="' + key +'">' + key +'</option>';
+      })
+
+      str += '</select>'
+      
+      if(typeof plugin.settings.profiles == 'string') {
+        //TODO: load it on json
+      }
+
+      ele.append('<div class="clearfix profiles"/>').find('> :last-child').append(str).find('select').change(function(){
+        selected_profile = $(this).val();
+        
+        $.each(plugin.settings.profiles[selected_profile], function(key, value) {
+
+          // convert string splitted by | to object
+          if (typeof value == 'string') {
+            var substr = value.split('|');
+            value = {
+              'selector': substr[0], 
+              'type': substr[1], 
+              'value': substr[2]
+              };
+          }
+
+          // merge values from profile to our global object
+          $.each(tt, function(temp, cssopt) {
+            if(value.selector == cssopt.selector && value.type == cssopt.type) {
+              tt[temp].value = value.value;
+            }
+          })
+
+
+        })
+
+        // set and reload panel on new color
+        inlineCSS();
+        plugin.init();
+
+      });
+      
+      // if any profil is selected add attrib to selectbox
+      if (selected_profile != '') {
+        ele.find('.profiles select option[value="' + selected_profile + '"]').attr('selected', 'selected');
+      }
+
+    }
+
     var build = function() {
+      
       $.each(tt,function(key, array) {
         tt[key]['obj'] = $(element).find(".content").append('<div class="clearfix ' +  array.type  + '"><h2 class="title">' +  array.text + '</h2></div>').find('div:last');
 
@@ -66,8 +122,8 @@
 
         if (array.type == 'font-family') {
           fontfamily_worker(key, array);
-        }		
-		
+        }
+
         if (typeof array.description !== 'undefined') {
           $(tt[key]['obj']).append('<div class="help"/>').append('<div class="description">'+ array.description +'</div>');
 
@@ -81,20 +137,21 @@
 
       $(element).find(".content").append('<input value="Save" type="submit" />');
       $(element).find(".content").find('input').click(save);
-	  
-	  $(element).find(".content").append('<div class="logger"><div class="icon"></div><span class="text"></span></div>');
-	  
-	  
+      
+      if (plugin.settings.profiles != '') {
+        profiles();
+      }      
 
-    //$('body').append('<style>body { background-color: red; }</style>');
+      $(element).find(".content").append('<div class="logger"><div class="icon"></div><span class="text"></span></div>');
+
     }
 
-	var logger = function(str, type) {
-		var log = $(element).find('.logger');
-		$(log).find('.text').text(str);
-		
-	}
-	
+    var logger = function(str, type) {
+      var log = $(element).find('.logger');
+      $(log).find('.text').text(str);
+
+    }
+
     var inlineCSS = function() {
       var ret = '';
       $.each(tt, function(key, array) {
@@ -127,13 +184,13 @@
             "type": array.type,
             "value": array.value
           }
-		  
-		if (typeof array.ext !== 'undefined') {
-			  values[i].ext = array.ext
-		}
 
-		i++;
-		  
+          if (typeof array.ext !== 'undefined') {
+            values[i].ext = array.ext
+          }
+
+          i++;
+
         }
 
       })
@@ -148,7 +205,7 @@
         },
         function(data) {
           //alert("Data Loaded: " + data);
-		  logger('saved');
+          logger('saved');
         });
         console.log(values);
       //saveit
@@ -156,42 +213,53 @@
     }
 
     var fontfamily_worker = function(key, array) {
-	  //var fonts = ['Times, "Times New Roman", Georgia, "DejaVu Serif", serif', 'Georgia, "Times New Roman", "DejaVu Serif", serif'];
-	  var fonts = {};
-	  fonts['times'] = {'name': "Times, 'Times New Roman'"};
-	  fonts['georgia'] = {'name': "Georgia, 'Times New Roman', 'DejaVu Serif', serif"};
-	  fonts['verdana'] = {'name': "Verdana, Tahoma, 'DejaVu Sans', sans-serif"};
-	  fonts['driod'] = {'name': "'Droid Sans',sans-serif", 'link': 'http://fonts.googleapis.com/css?family=Droid+Sans'};
-	  fonts['helvetica'] = {'name': "'HelveticaNeue-Light', 'Helvetica Neue Light',Helvetica,sans-serif"};
-	  
-	  
+      //var fonts = ['Times, "Times New Roman", Georgia, "DejaVu Serif", serif', 'Georgia, "Times New Roman", "DejaVu Serif", serif'];
+      var fonts = {};
+      fonts['times'] = {
+        'name': "Times, 'Times New Roman'"
+      };
+      fonts['georgia'] = {
+        'name': "Georgia, 'Times New Roman', 'DejaVu Serif', serif"
+      };
+      fonts['verdana'] = {
+        'name': "Verdana, Tahoma, 'DejaVu Sans', sans-serif"
+      };
+      fonts['driod'] = {
+        'name': "'Droid Sans',sans-serif", 
+        'link': 'http://fonts.googleapis.com/css?family=Droid+Sans'
+      };
+      fonts['helvetica'] = {
+        'name': "'HelveticaNeue-Light', 'Helvetica Neue Light',Helvetica,sans-serif"
+      };
 
-	  var opt = '<select name="fontfamiliy" size="1"><option value="clear1" class="clear1">clear1</option>'
 
-	  for (var font in fonts) {
-		opt += '<option value="' + font +'" class="' + font +'" style="font-family: ' + fonts[font].name  + '">' + font +'</option>';
-		if (typeof fonts[font].link !== 'undefined') {
-			$('body').append("<link href='" +  fonts[font].link + "' rel='stylesheet' type='text/css'>");
-		}
-	  }
-	  opt += '</select>'
-	  
+
+      var opt = '<select name="fontfamiliy" size="1"><option value="clear1" class="clear1">clear1</option>'
+
+      for (var font in fonts) {
+        opt += '<option value="' + font +'" class="' + font +'" style="font-family: ' + fonts[font].name  + '">' + font +'</option>';
+        if (typeof fonts[font].link !== 'undefined') {
+          $('body').append("<link href='" +  fonts[font].link + "' rel='stylesheet' type='text/css'>");
+        }
+      }
+      opt += '</select>'
+
       var obj = $(tt[key]['obj']).append(opt).find('select');
-	  $(obj).change(function() {
+      $(obj).change(function() {
 
-		if(typeof tt[key].ext !== 'undefined') delete tt[key].ext
-		if ($(this).val() == 'clear1') {
-			if(typeof tt[key].value !== 'undefined') delete tt[key].value
-		} else {
-			tt[key].value = fonts[$(this).val()].name;		
-			if (typeof fonts[$(this).val()].link !== 'undefined') tt[key].ext = fonts[$(this).val()].link;
-		}
+        if(typeof tt[key].ext !== 'undefined') delete tt[key].ext
+        if ($(this).val() == 'clear1') {
+          if(typeof tt[key].value !== 'undefined') delete tt[key].value
+        } else {
+          tt[key].value = fonts[$(this).val()].name;
+          if (typeof fonts[$(this).val()].link !== 'undefined') tt[key].ext = fonts[$(this).val()].link;
+        }
 
         inlineCSS();
-      });	  
-	  
-	}
-	
+      });
+
+    }
+
     var color_worker = function(key, array) {
       var selc = $(tt[key]['obj']).append('<div class="colorselector"/>').find('.colorselector');
 
@@ -221,35 +289,37 @@
 
     var image_worker = function(key, array) {
       var obj = $(tt[key]['obj']).append('<div class="ext images clearfix"/>').find('div:last');
-      
+
       $.each(array.files ,function(image_id, img_array) {
         var selc = $(tt[key]['obj']).find('> div').append('<div class="img"><img src="' + img_array.thumbnail + '"></div>').find(".img:last");
 
         $(selc).click(function(){
-          $(tt[key]['obj']).find('.selected').removeClass('selected'); $(selc).addClass('selected');
+          $(tt[key]['obj']).find('.selected').removeClass('selected');
+          $(selc).addClass('selected');
           tt[key].value = 'url(' + img_array.image + '); ';
-		  if (img_array.image.indexOf("repeat-y") != -1 ) {
-			tt[key].value += 'background-position: center top ; background-repeat:repeat-y'
-		  } else if (img_array.image.indexOf("repeat-x") != -1 ) {
-			tt[key].value += 'background-position: center top ; background-repeat:repeat-x'
-		  } else {
-			tt[key].value += 'background-position:0% 0% ; background-repeat:repeat'		  
-		  }
-		  
-		  
+          if (img_array.image.indexOf("repeat-y") != -1 ) {
+            tt[key].value += 'background-position: center top ; background-repeat:repeat-y'
+          } else if (img_array.image.indexOf("repeat-x") != -1 ) {
+            tt[key].value += 'background-position: center top ; background-repeat:repeat-x'
+          } else {
+            tt[key].value += 'background-position:0% 0% ; background-repeat:repeat'
+          }
+
+
           inlineCSS();
         });
 
       })
-      
+
       var none = obj.prepend('<div class="img none"/>').find('.none');
       $(none).click(function(){
-        $(tt[key]['obj']).find('.selected').removeClass('selected'); $(this).addClass('selected');
-		tt[key].value = 'none';		
-	    inlineCSS();
+        $(tt[key]['obj']).find('.selected').removeClass('selected');
+        $(this).addClass('selected');
+        tt[key].value = 'none';
+        inlineCSS();
       });
 
-      
+
     }
 
     var tt = {};
