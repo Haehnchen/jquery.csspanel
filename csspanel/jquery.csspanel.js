@@ -64,24 +64,24 @@
       })
 
       str += '</select>'
-      
+
       if(typeof plugin.settings.profiles == 'string') {
-        //TODO: load it on json
+      //TODO: load it on json
       }
 
       ele.append('<div class="clearfix profiles"/>').find('> :last-child').append(str).find('select').change(function(){
         selected_profile = $(this).val();
-        
+
         $.each(plugin.settings.profiles[selected_profile], function(key, value) {
 
           // convert string splitted by | to object
           if (typeof value == 'string') {
             var substr = value.split('|');
             value = {
-              'selector': substr[0], 
-              'type': substr[1], 
+              'selector': substr[0],
+              'type': substr[1],
               'value': substr[2]
-              };
+            };
           }
 
           // merge values from profile to our global object
@@ -99,7 +99,7 @@
         plugin.init();
 
       });
-      
+
       // if any profil is selected add attrib to selectbox
       if (selected_profile != '') {
         ele.find('.profiles select option[value="' + selected_profile + '"]').attr('selected', 'selected');
@@ -108,7 +108,7 @@
     }
 
     var build = function() {
-      
+
       $.each(tt,function(key, array) {
         tt[key]['obj'] = $(element).find(".content").append('<div class="clearfix ' +  array.type  + '"><h2 class="title">' +  array.text + '</h2></div>').find('div:last');
 
@@ -124,6 +124,10 @@
           fontfamily_worker(key, array);
         }
 
+        if (array.type == 'font-size') {
+          fontsize_worker(key, array);
+        }
+
         if (typeof array.description !== 'undefined') {
           $(tt[key]['obj']).append('<div class="help"/>').append('<div class="description">'+ array.description +'</div>');
 
@@ -137,10 +141,10 @@
 
       $(element).find(".content").append('<input value="Save" type="submit" />');
       $(element).find(".content").find('input').click(save);
-      
+
       if (plugin.settings.profiles != '') {
         profiles();
-      }      
+      }
 
       $(element).find(".content").append('<div class="logger"><div class="icon"></div><span class="text"></span></div>');
 
@@ -225,7 +229,7 @@
         'name': "Verdana, Tahoma, 'DejaVu Sans', sans-serif"
       };
       fonts['driod'] = {
-        'name': "'Droid Sans',sans-serif", 
+        'name': "'Droid Sans',sans-serif",
         'link': 'http://fonts.googleapis.com/css?family=Droid+Sans'
       };
       fonts['helvetica'] = {
@@ -257,6 +261,31 @@
 
         inlineCSS();
       });
+
+    }
+
+    var fontsize_worker = function(key, array) {
+      var obj = $(tt[key]['obj']);
+
+      var objs = ['12px', '14px', '16px']
+      var create = '<select id="fontsize">';
+
+      $.each(objs, function(skey, svalue) {
+        create += '<option value="'+svalue+'">'+svalue+'</option>';
+      })
+
+      create += '</select>';
+      $(obj).append(create);
+
+      $(obj).find('select').change(function() {
+        tt[key].value = $(this).val();
+        inlineCSS();
+      })
+
+      // if any profil is selected add attrib to selectbox
+      if (typeof tt[key].value !== 'undefined') {
+        obj.find('select option[value="' + tt[key].value + '"]').attr('selected', 'selected');
+      }
 
     }
 
