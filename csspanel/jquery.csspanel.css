@@ -140,21 +140,16 @@
 	margin-left:3px;
 }
 
-/*
-#panel .font-family .times {
-  font-family: Times, "Times New Roman", Georgia, "DejaVu Serif", serif;
+#panel .error {
+  color:red;
 }
 
-#panel .font-family .georgia {
-  font-family: Georgia, "Times New Roman", "DejaVu Serif", serif;
+#panel .description {
+  color:#7d7d7d;
 }
 
-#panel .font-family .verdana {
-	font-family: Verdana, Tahoma, "DejaVu Sans", sans-serif;
+#panel .error,
+#panel .description {
+  font-size:10px;
 }
-
-#panel .font-family .droid {
-	font-family: "Droid Sans",sans-serif;
-}
-*/
 

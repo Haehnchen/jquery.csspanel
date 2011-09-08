@@ -26,6 +26,7 @@
     plugin.init = function() {
       plugin.settings = $.extend({}, defaults, options);
 
+      // remove old panel if we rebuild it, or only append it
       if ($element.find('.panel-content').length > 0) $element.find('.panel-content').remove();
       $element.append('<div class="panel-content" class="clearfix"><div id="panel-content-inner" class="clearfix"><div class="content"></div></div><a href="" class="trigger">info</a></div>');
 
@@ -112,20 +113,18 @@
       $.each(tt,function(key, array) {
         tt[key]['obj'] = $(element).find(".content").append('<div class="clearfix ' +  array.type  + '"><h2 class="title">' +  array.text + '</h2></div>').find('div:last');
 
-        if (array.type == 'background-color' || array.type == 'color') {
-          color_worker(key, array);
+        var RunFunction = array.type.replace('-', '_') + '_worker';
+
+        try {
+          func = eval(RunFunction);
+        } catch (exception) {
+          console.log(exception.toString())
         }
 
-        if (array.type == 'background-image') {
-          image_worker(key, array);
-        }
-
-        if (array.type == 'font-family') {
-          fontfamily_worker(key, array);
-        }
-
-        if (array.type == 'font-size') {
-          fontsize_worker(key, array);
+        if (typeof func === 'function') {
+          func(key, array);
+        } else {
+          console.log('unknown function: ' + RunFunction)
         }
 
         if (typeof array.description !== 'undefined') {
@@ -172,7 +171,7 @@
       if((sel = $('#panel-styles')).length == 0) {
         $('body').append('<div id="panel-styles"><style>' + ret  + '</div>');
       } else {
-        $(sel).html('<style>' + ret + '<style>');
+        $(sel).html('<style>' + ret + '</style>');
       }
     }
 
@@ -200,24 +199,24 @@
       })
 
       if (i > 0) {
-        //alert(i);
 
+        // IE7 has no stringify
         var string = (typeof JSON === 'undefined') ? $.toJSON(values) : string = JSON.stringify(values);
 
         $.post(plugin.settings.jsonpath, {
           save: string
         },
+        
         function(data) {
-          //alert("Data Loaded: " + data);
           logger('saved');
         });
-        console.log(values);
-      //saveit
+
+
       }
     }
 
-    var fontfamily_worker = function(key, array) {
-      //var fonts = ['Times, "Times New Roman", Georgia, "DejaVu Serif", serif', 'Georgia, "Times New Roman", "DejaVu Serif", serif'];
+    var font_family_worker = function(key, array) {
+
       var fonts = {};
       fonts['times'] = {
         'name': "Times, 'Times New Roman'"
@@ -235,8 +234,6 @@
       fonts['helvetica'] = {
         'name': "'HelveticaNeue-Light', 'Helvetica Neue Light',Helvetica,sans-serif"
       };
-
-
 
       var opt = '<select name="fontfamiliy" size="1"><option value="clear1" class="clear1">clear1</option>'
 
@@ -264,7 +261,7 @@
 
     }
 
-    var fontsize_worker = function(key, array) {
+    var font_size_worker = function(key, array) {
       var obj = $(tt[key]['obj']);
 
       var objs = ['12px', '14px', '16px']
@@ -291,8 +288,6 @@
 
     var color_worker = function(key, array) {
       var selc = $(tt[key]['obj']).append('<div class="colorselector"/>').find('.colorselector');
-
-
       // set current color values
       try {
         if (typeof (color = $(array.selector).css(array.type)) !== 'undefined') {
@@ -301,8 +296,11 @@
       } catch(e) {
       // IE7 + $ cant handle :hover effects
       }
-
-
+      
+      if(!jQuery().ColorPicker) {
+        selc.parent().append('<div class="error">ColorPicker missing</div>');
+        return false;
+      }      
 
       selc.ColorPicker({
         onChange: function (hsb, hex, rgb) {
@@ -316,7 +314,10 @@
       });
     }
 
-    var image_worker = function(key, array) {
+    // some one use it for callback
+    var background_color_worker = color_worker
+
+    var background_image_worker = function(key, array) {
       var obj = $(tt[key]['obj']).append('<div class="ext images clearfix"/>').find('div:last');
 
       $.each(array.files ,function(image_id, img_array) {
